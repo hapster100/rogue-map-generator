@@ -11,13 +11,102 @@ level* create_empty_level(int h, int w) {
   return new_lvl;
 }
 
+void textColor(int r, int g, int b) {
+  printf("\e[38;2;%d;%d;%dm", r, g, b);
+}
+
+void backColor(int r, int g, int b) {
+  printf("\e[48;2;%d;%d;%dm", r, g, b);
+}
+
+void resetColor() {
+  printf("\e[0m");
+}
+
 void print_level(level* lvl) {
+  textColor(200, 200, 0);
+  printf(" ");
+  for(int i = 0; i < lvl->width; i++) {
+    printf("_");
+  }
+  resetColor();
+  printf("\n");
+  textColor(200, 200, 0);
+  backColor(0,0,0);
+  printf("/");
+  for(int i = 0; i < lvl->width; i++) {
+    printf(" ");
+  }
+  printf("\\");
+  resetColor();
+  printf("\n");
+
   for(int i = 0; i < lvl->heigth; i++) {
+    textColor(200, 200, 0);
+    backColor(0,0,0);
+    printf("|");
+    resetColor();
     for(int j = 0; j < lvl->width; j++) {
-      printf("%c", lvl->map[i * lvl->width + j]);
+      char c = lvl->map[i * lvl->width + j];
+      switch (c) {
+      case WALL:
+        textColor(10, 10, 10);
+        backColor(60, 30, 30);
+        break;
+      case FLOOR:
+        textColor(30, 20, 20);
+        backColor(120, 80, 80);
+        break;
+      case DOOR:
+        textColor(20, 20, 20);
+        backColor(100,50,0);
+        break;
+      case EMPTY:
+        textColor(10, 10, 10);
+        backColor(0,0,0); 
+        break;
+      case TUBE:
+        textColor(70,70,10);
+        backColor(0,0,0);
+        break;
+      case SMALL_TUBE:
+        textColor(100,10,10);
+        backColor(0,0,0);
+        break;
+      case LARGE_TUBE:
+        textColor(10, 100, 10);
+        backColor(0,0,0);
+        break;
+      case HALLWAY:
+        textColor(40, 30, 30);
+        backColor(60, 40, 40);
+        break;
+      case WATER:
+        textColor(0, 10, 30);
+        backColor(0, 0, 0);
+        break;
+      default:
+        break;
+      }
+      printf("%c", c);
+      resetColor();
     }
+    textColor(200, 200, 0);
+    backColor(0,0,0);
+    printf("|");
+    resetColor();
     printf("\n");
   }
+  
+  textColor(200, 200, 0);
+  backColor(0,0,0);
+  printf("\\");
+  for(int i = 0; i < lvl->width; i++) {
+    printf("_");
+  }
+  printf("/");
+  resetColor();
+  printf("\n");
 }
 
 void set_lvl_xy(level* lvl, int x, int y, char c) {
@@ -39,7 +128,6 @@ char get_lvl_xy(level* lvl, int x, int y) {
 }
 
 void add_room(level* l, int x, int y, int h, int w) {
-  printf("Add room x: %d y: %d heigth: %d width %d\n", x, y, h, w);
   int lh = l->heigth, lw = l->width;
   if(lh >= x + h && lw >= y + w && x >= 0 && y >= 0) {
     for(int i = x; i < x + h; i++) {
@@ -74,6 +162,22 @@ int count_level_xy(level* l, char item) {
   int counter = 0;
   for(int i = 0; i < l->heigth * l->width; i++) {
     if(l->map[i] == item) counter++;
+  }
+  return counter;
+}
+
+int count_level_area_xy(level* l, int x, int y, int h, int w, char item) {
+  int counter = 0;
+  if(x >= l->heigth || y >= l->width) return 0;
+  while(x < 0) {x++; h--;}
+  while(y < 0) {y++; w--;}
+  while(x+h > l->heigth) h--;
+  while(y+w > l->width) w--;
+  
+  for (int i = 0; i < h; i++) {
+    for (int j = 0; j < w; j++) {
+     if(get_lvl_xy(l, x+i, y+j) == item) counter++;
+    }
   }
   return counter;
 }
