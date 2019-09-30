@@ -50,40 +50,44 @@ void print_level(level* lvl) {
       char c = lvl->map[i * lvl->width + j];
       switch (c) {
       case WALL:
-        textColor(10, 10, 10);
-        backColor(60, 30, 30);
+        textColor(45, 15, 15);
+        backColor(50, 20, 20);
         break;
       case FLOOR:
-        textColor(30, 20, 20);
-        backColor(120, 80, 80);
+        textColor(120,110,110);
+        backColor(120,110,110);
         break;
       case DOOR:
-        textColor(20, 20, 20);
-        backColor(100,50,0);
+        textColor(150,110,150);
+        backColor(40,30,20);
         break;
       case EMPTY:
-        textColor(10, 10, 10);
+        textColor(0,0,0);
         backColor(0,0,0); 
         break;
       case TUBE:
-        textColor(70,70,10);
-        backColor(0,0,0);
+        textColor(9,9,9);
+        backColor(9,9,9);
         break;
       case SMALL_TUBE:
-        textColor(100,10,10);
-        backColor(0,0,0);
+        textColor(6,6,6);
+        backColor(6,6,6);
         break;
       case LARGE_TUBE:
-        textColor(10, 100, 10);
-        backColor(0,0,0);
+        textColor(3,3,3);
+        backColor(3,3,3);
         break;
       case HALLWAY:
-        textColor(40, 30, 30);
-        backColor(60, 40, 40);
+        textColor(100,60,20);
+        backColor(100,60,20);
         break;
       case WATER:
-        textColor(0, 10, 30);
-        backColor(0, 0, 0);
+        textColor(100,100,150);
+        backColor(25,25,75);
+        break;
+      case BRIDGE: 
+        textColor(60,30,20);
+        backColor(60,30,20);
         break;
       default:
         break;
@@ -180,4 +184,17 @@ int count_level_area_xy(level* l, int x, int y, int h, int w, char item) {
     }
   }
   return counter;
+}
+
+void level_free(level* l) {
+  free(l->map);
+  free(l);
+}
+
+level* copy_level(level* l) {
+  level* copy = create_empty_level(l->heigth, l->width);
+  for (int i = 0; i < l->heigth * l->width; i++) {
+    copy->map[i] = l->map[i];
+  }
+  return copy;
 }
